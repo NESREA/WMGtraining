@@ -1,5 +1,5 @@
 # WMGtraining 
-## R Language training for NESREA Web Monitoring Group.
+## Computing for NESREA Web Monitoring Group.
 
 This repository contains materials used for in-house training conducted for the Web Monitoring Group.
 
@@ -15,8 +15,4 @@ This repository contains materials used for in-house training conducted for the 
   * [Matrix creation](https://github.com/NESREA/WMGtraining/blob/master/scripts/create-matrix.R)
   * [List creation](https://github.com/NESREA/WMGtraining/blob/master/scripts/create-list.R)
   * [Updating R](https://github.com/BroVic/WMGtraining/blob/master/scripts/updating.R)
-<!--
-```person(given = "Victor", family = "Ordu", email = "victor.ordu@nesrea.gov.ng", role = c("aut", "cre"))```
--->
-
-
+  * [Accessing Twitter API](https://github.com/NESREA/WMGtraining/blob/master/scripts/steps-twitter-data.R)
