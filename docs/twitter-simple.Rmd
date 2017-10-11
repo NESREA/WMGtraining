@@ -1,0 +1,138 @@
+---
+title: "Simple analysis for Twitter Data"
+author: "Web Monitoring Group"
+date: "11 October 2017"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Analyse Twitter data  
+We have a dataset of 500 tweets previously obtained using the *twitteR* package and by searching for the word "barcelona". We will first do look at the first few observations in the dataset.
+```{r}
+tweets <- readRDS("../data/barcelona-tweets.rds")
+head(tweets)
+```
+
+We will routinely carry out some other operations just to have an overview or get a feel of what the dataset is like.
+
+What are the dimensions of our data frame?
+```{r}
+dim(tweets)
+```
+There are 500 rows and 16 variables.
+
+What are the names of our variables? We can list them so
+```{r}
+colnames(tweets)
+```
+
+Summary output of each variable
+```{r}
+summary(tweets)
+```
+This kind of summary can show some interesting results. For instance, looking at the variable `retweetCount`, wouldn't we love to know which tweet attracted 8,596 retweets? This can be easily done with R, but we won't go into that here...
+
+Structure of the object i.e. the data frame
+```{r}
+str(tweets)
+```
+
+## Drawing a graph  
+Although there are many native functions in R for drawing plots, We are going to be using a popular package known as *ggplot2* to draw our plots. We will learn about base R graphics another time.
+```{r, message = FALSE}
+library(ggplot2)
+```
+
+First, for the purpose of demonstration, we will load the dataset into a ggplot object, which will ultimately be used for plotting graphs. We will ask R to run this object (here called `gg`). When drawing a plot, we wouldn't normally run this step but it is being done here just to show what's going on.
+```{r}
+gg <- ggplot(tweets)
+gg
+```
+
+All we see is a blank area, which means nothing. But we now have a bonafide **ggplot** object, which is the foundation of other features that we will be adding subsequently.
+
+Let's now examine this object a bit for the sake of curiosity and better understanding
+```{r}
+typeof(gg)
+```
+```{r}
+class(gg)
+```
+The `class` of an object is what makes object-oriented programming possible in R and developers can assign peculiar behaviours to an object. This is the secret behind the *ggplot2* package.
+
+This object `gg` contains a whole lot of information including our dataset, layers, scales, mapping, theme, coordinates, etc.
+```{r}
+str(gg)
+```
+
+Now we're going to introduce the aesthetics function `aes()`, which is necessary to map variables from the dataset to parts of the plotting area.
+
+To quickly demonstrate what this function does, check this out
+```{r}
+aes(created)
+```
+The above output shows that we are mapping our *created* variable to the x-axis of our plot, as can be seen below...
+```{r}
+gg <- ggplot(tweets, aes(created))
+gg
+```
+
+We will now draw a simple graph of our tweets based on when they were created, precisely a density plot using `geom_density()`
+```{r}
+ggplot(tweets, aes(created)) + 
+  geom_density()
+```
+
+The `+` sign tells us that we are adding this on top of our plotting area as a layer. In the *ggplot2* package, you can add various elements of a plot one on top of another in this way, but we will not go into that here.
+
+Now, we would like to explore the data in a multivariate fashion. We can check to see how different categories of tweets are distributed e.g. whether they are retweets or not (comparing `created` with `isRetweet` variable). We will do this by mapping another aesthetic, not to an axis, but to a colour scheme - by applying this to the function `geom_density()` that created the curve in the first place.
+```{r}
+gg <- ggplot(tweets, aes(created)) + 
+  geom_density(aes(col = isRetweet))
+gg
+```
+
+Let's try out the same thing with another categorical variable `truncated`. Hmm, what's in those extra long tweets?
+
+We go back to disaggregating the tweets along the lines of whether or not they were retweets, and this time we want to shade the entire area under the curve by using a `fill` parameter instead.
+```{r}
+gg <- ggplot(tweets, aes(created)) +
+  geom_density(aes(fill = isRetweet))
+gg
+```
+
+Now let's introduce some transparency so that we can better visualise this using the **alpha** parameter.
+```{r}
+gg <- ggplot(tweets, aes(created)) + 
+  geom_density(aes(fill = isRetweet), alpha = 0.5)
+gg
+```
+
+
+```{r}
+gg <- ggplot(tweets, aes(created)) + 
+  geom_density(aes(fill = isRetweet), alpha = 0.5)
+gg
+```
+
+
+Let us add another plot to our graph.  
+```{r}
+gg <- ggplot(tweets, aes(x = created, y = retweetCount)) +
+  geom_point()
+gg
+```
+
+Observe that each time we simply added little pieces of code in order to make striking changes to the graphs.
+
+To recap on ggplot:
+1. Apply the dataset to `ggplot()`
+2. Use at least one `aes()` function to determine the axes
+3. Add other layers to 1. and 2. above (as your skill permits).
+
+To be continued...
