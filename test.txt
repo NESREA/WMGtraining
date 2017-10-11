@@ -1,4 +1,0 @@
-This is a test
-
-
-We are having a training session on Git.
