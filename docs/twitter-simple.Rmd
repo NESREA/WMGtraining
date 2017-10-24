@@ -22,9 +22,9 @@ We will routinely carry out some other operations just to have an overview or ge
 
 What are the dimensions of our data frame?
 ```{r}
-dim(tweets)
+(details <- dim(tweets))
 ```
-There are 500 rows and 16 variables.
+There are `r details[1]` rows and `r details[2]` variables.
 
 What are the names of our variables? We can list them so
 ```{r}
@@ -63,11 +63,16 @@ typeof(gg)
 ```{r}
 class(gg)
 ```
-The `class` of an object is what makes object-oriented programming possible in R and developers can assign peculiar behaviours to an object. This is the secret behind the *ggplot2* package.
+The `class` of an object is what makes object-oriented programming possible in R and developers can ascribe peculiar behaviours to an object. This is the secret behind the *ggplot2* package.
 
 This object `gg` contains a whole lot of information including our dataset, layers, scales, mapping, theme, coordinates, etc.
 ```{r}
 str(gg)
+```
+
+The elements of a list can be selected out using the `$` operator. For example, this object doesnot have any **layers** yet and when we check, it returns an empty list.
+```{r}
+str(gg$layers)
 ```
 
 Now we're going to introduce the aesthetics function `aes()`, which is necessary to map variables from the dataset to parts of the plotting area.
@@ -84,11 +89,19 @@ gg
 
 We will now draw a simple graph of our tweets based on when they were created, precisely a density plot using `geom_density()`
 ```{r}
-ggplot(tweets, aes(created)) + 
+gg <- ggplot(tweets, aes(created)) + 
   geom_density()
+gg
 ```
 
 The `+` sign tells us that we are adding this on top of our plotting area as a layer. In the *ggplot2* package, you can add various elements of a plot one on top of another in this way, but we will not go into that here.
+
+Now we are curious about what happened to the *layer* element of our `ggplot` object...
+```{r}
+str(gg$layers)
+```
+
+and it is now populated with a lot of information concerning our plot in its current state.
 
 Now, we would like to explore the data in a multivariate fashion. We can check to see how different categories of tweets are distributed e.g. whether they are retweets or not (comparing `created` with `isRetweet` variable). We will do this by mapping another aesthetic, not to an axis, but to a colour scheme - by applying this to the function `geom_density()` that created the curve in the first place.
 ```{r}
@@ -113,11 +126,11 @@ gg <- ggplot(tweets, aes(created)) +
 gg
 ```
 
-
+We can draw a histogram of the number of times a particular item was retweeted and add a title to it.
 ```{r}
-gg <- ggplot(tweets, aes(created)) + 
-  geom_density(aes(fill = isRetweet), alpha = 0.5)
-gg
+ggplot(tweets, aes(retweetCount)) +
+  geom_histogram(bins = 100) +
+  ggtitle(label = "Histogram of Retweet Counts")
 ```
 
 
@@ -128,7 +141,14 @@ gg <- ggplot(tweets, aes(x = created, y = retweetCount)) +
 gg
 ```
 
-Observe that each time we simply added little pieces of code in order to make striking changes to the graphs.
+Let us once again disaggregate this visualisation along the lines of whether they are **retweets*.
+```{r}
+gg <- ggplot(tweets, aes(x = created, y = retweetCount)) +
+  geom_point(aes(col = isRetweet))
+gg
+```
+
+Observe that each time we can simply add little pieces of code in order to make striking changes to the graphs.
 
 To recap on ggplot:
 1. Apply the dataset to `ggplot()`
